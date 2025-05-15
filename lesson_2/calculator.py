@@ -1,52 +1,65 @@
-# Ask the user for first number
-# Ask user for second number
-# Ask user for type of operation: add, subtract, multiply, or divide
-# Perform calculation on both numbers
-# Display result
+import json
 
-def prompt(text):
-    print(f"==> {text}")
+LANGUAGE = 'en'
+
+with open('calculator_messages.json', 'r') as file:
+    MESSAGES = json.load(file)
+
+def prompt(key):
+    message = messages(key, LANGUAGE)
+    print(f'==> {message}')
 
 def invalid_number(num_str):
     try:
-        int(num_str)
+        float(num_str)
     except ValueError:
         return True
 
     return False
 
-prompt('Welcome to the Calculator!')
+def messages(message, lang):
+    return MESSAGES[lang][message]
 
-prompt('What is the first number?')
-number1 = input()
+prompt('welcome')
 
-while invalid_number(number1):
-    print("That doesn't look like a valid number. Try again.")
+while True:
+    prompt('first_number')
     number1 = input()
 
-prompt('What is the second number?')
-number2 = input()
+    while invalid_number(number1):
+        prompt('invalid')
+        number1 = input()
 
-while invalid_number(number2):
-    print("That doesn't look like a valid number. Try again.")
+    prompt('second_number')
     number2 = input()
 
-prompt("""What operation would you like to perform?
-1) add 2) subtract 3) multiply 4) divide""")
-operation = input()
+    while invalid_number(number2):
+        prompt('invalid')
+        number2 = input()
 
-while operation not in ['1', '2', '3', '4']:
-    print("You must choose 1, 2, 3, or 4")
+    prompt('perform_operation')
     operation = input()
 
-match operation:
-    case '1':
-        output = int(number1) + int(number2)
-    case '2':
-        output = int(number1) - int(number2)
-    case '3':
-        output = int(number1) * int(number2)
-    case '4':
-        output = int(number1) / int(number2)
+    while operation not in ['1', '2', '3', '4']:
+        print("You must choose 1, 2, 3, or 4")
+        operation = input()
 
-print(f'The result is {output}')
+    match operation:
+        case '1':
+            output = float(number1) + float(number2)
+        case '2':
+            output = float(number1) - float(number2)
+        case '3':
+            output = float(number1) * float(number2)
+        case '4':
+            output = float(number1) / float(number2)
+
+    print("The result is:", output)
+
+    prompt('another_calculation')
+    answer = input()
+
+    if answer.lower() in ['y', 'yes']:
+        continue
+    else:
+        break
